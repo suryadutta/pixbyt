@@ -1,0 +1,15 @@
+jobs:
+- name: minutecast
+  tasks:
+  - tap-pixlet--minutecast target-tidbyt
+- name: minutecast--webp
+  tasks:
+  - tap-pixlet--minutecast target-webp
+
+plugins:
+  extractors:
+  - name: tap-pixlet--minutecast
+    inherit_from: tap-pixlet
+    pip_url: git+https://github.com/DouweM/tap-pixlet.git -r apps/minutecast/requirements.txt
+    config:
+      path: apps/minutecast
