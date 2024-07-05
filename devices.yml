@@ -1,0 +1,4 @@
+devices:
+- name: default
+  id: $TIDBYT_DEVICE_ID
+  key: $TIDBYT_KEY
