@@ -1,6 +1,6 @@
 apps:
 - name: minutecast
-  schedule: '* * * * *' # Every hour
+  schedule: '*/5 * * * *' # Every hour
 
 # - name: <app>
 #   schedule: '*/15 * * * *' # Every 15 minutes

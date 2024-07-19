@@ -6,25 +6,26 @@ load("time.star", "time")
 load("humanize.star", "humanize")
 
 GRADIENT_BAR_COLORS = [
-    "D2222D", 
-    "D2222D",
-    "D2222D", 
-    "D83826", 
-    "DE4E20",
-    "E56519",
-    "EB7B13", 
-    "F2920C", 
-    "F8A806", 
-    "FFBF00", 
-    "DFB705", 
-    "C0AF0A", 
-    "A0A70F", 
-    "819F14", 
-    "619719", 
-    "428F1E"
+    "E03C32",
+    "E03C32", 
+    "E4522B",
+    "E96724", 
+    "ED7D1D", 
+    "F29216",
+    "F6A80F",
+    "FBBD08", 
+    "FFD301", 
+    "ECCF0F", 
+    "D9CB1D", 
+    "C6C72B", 
+    "B4C238", 
+    "A1BE46", 
+    "8EBA54", 
+    "7BB662", 
 ]
 
-ALWAYS_SHOW = True
+ALWAYS_SHOW = False
+SHOW_TIME = False
 
 # Chicago
 LAT = 41.87556
@@ -32,7 +33,7 @@ LON = -87.62442
 
 def render_rain_box(precipitation):
 
-    bar_height = min(int(3.5 * math.pow(precipitation, 0.62)),16)
+    bar_height = min(int(6 * math.pow(precipitation, 0.62)),16)
     full_bar_colors = ["000" for _ in range(16-bar_height)] + reversed([GRADIENT_BAR_COLORS[15-i] for i in range(bar_height)])
 
     return render.Column(
@@ -47,7 +48,7 @@ def main(config):
     timezone = "America/Chicago"
 
     # Get the current time
-    current_time_str = humanize.time_format("HH:mm:ss", time.now().in_location(timezone))
+    current_time_str = humanize.time_format("hh:mm a", time.now().in_location(timezone))
 
     OPENWEATHERMAP_API_KEY = config.get("openweathermap_api_key")
     OPENWEATHERMAP_URI = "https://api.openweathermap.org/data/3.0/onecall?lat={}&lon={}&exclude=hourly,daily,alerts&appid={}&units=imperial".format(str(LAT), str(LON), OPENWEATHERMAP_API_KEY)
@@ -73,9 +74,9 @@ def main(config):
         for i in range(len(precipitation_intensities)):
             if precipitation_intensities[i] > 0:
                 if i == 1:
-                    description = "Rain starting in 1 minute"
+                    description = "Rain starting in 1 min"
                 else:
-                    description = "Rain starting in {} minutes".format(i)
+                    description = "Rain starting in {} mins".format(i)
                 break
 
     elif precipitation_intensities[-1] == 0:
@@ -83,12 +84,13 @@ def main(config):
             if reversed(precipitation_intensities)[i] > 0:
                 ending_in_mins = len(precipitation_intensities) - i
                 if ending_in_mins == 1:
-                    description = "Rain ending in 1 minute"
+                    description = "Rain ending in 1 min"
                 else:
-                    description = "Rain ending in {} minutes".format(ending_in_mins)
+                    description = "Rain ending in {} mins".format(ending_in_mins)
                 break
 
-    description = "[{}] {}".format(current_time_str, description)
+    if SHOW_TIME:
+        description = "[{}] {}".format(current_time_str, description)
 
     if total_precipitation == 0 and not ALWAYS_SHOW:
         print("--no precipitation in next hour, skip showing widget--")
